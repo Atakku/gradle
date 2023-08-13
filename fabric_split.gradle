@@ -2,12 +2,11 @@
 
 buildscript {
   repositories {
+    mavenCentral()
     maven {
       name = 'Fabric'
       url = 'https://maven.fabricmc.net/'
     }
-    mavenCentral()
-    gradlePluginPortal()
   }
   dependencies {
     classpath 'fabric-loom:fabric-loom.gradle.plugin:1.3-SNAPSHOT'
@@ -16,7 +15,8 @@ buildscript {
 
 subprojects {
   apply plugin: 'java'
-  apply plugin: 'net.fabricmc.loom.LoomGradlePlugin'
+  apply plugin: net.fabricmc.loom.bootstrap.LoomGradlePluginBootstrap
+
 
   group = "dev.atakku"
   archivesBaseName = "$rootProject.mod_name-$project.name"
