@@ -16,7 +16,7 @@ buildscript {
 
 subprojects {
   apply plugin: 'java'
-  apply plugin: 'net.fabricmc.loom.LoomGradlePlugin.java'
+  apply plugin: 'net.fabricmc.loom.LoomGradlePlugin'
 
   group = "dev.atakku"
   archivesBaseName = "$rootProject.mod_name-$project.name"
