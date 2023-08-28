@@ -14,12 +14,13 @@ buildscript {
 }
 
 subprojects {
-  apply plugin: 'java'
   apply plugin: net.fabricmc.loom.bootstrap.LoomGradlePluginBootstrap
 
+  base {
+	  archivesName = "$rootProject.mod_name-$project.name"
+  }
 
   group = "dev.atakku"
-  archivesBaseName = "$rootProject.mod_name-$project.name"
   version = "$rootProject.mod_version+$rootProject.minecraft_version"
 
   sourceCompatibility = JavaVersion.VERSION_17
@@ -65,7 +66,13 @@ subprojects {
       include(implementation project(path: ':shared', configuration: 'namedElements'))
     }
 
-    modLocalRuntime "maven.modrinth:modmenu:$rootProject.modmenu_version"
+    if (project.name == 'client') {
+      rootProject.properties.each {
+        if (it.key.startsWith("runtime_")) {
+          modLocalRuntime "maven.modrinth:${it.key.split("_")[1]}:${it.value}"
+        }
+      }
+    }
   }
 
   processResources {
