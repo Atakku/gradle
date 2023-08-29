@@ -53,6 +53,10 @@ subprojects {
     maven {
       name = 'Atakku Eufonia'
       url = 'https://maven.atakku.dev/eufonia'
+      credentials(PasswordCredentials)
+      authentication {
+        basic(BasicAuthentication)
+      }
     }
     maven { 
       name = 'OwO Lib'
