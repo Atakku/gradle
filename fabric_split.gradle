@@ -13,6 +13,8 @@ buildscript {
   }
 }
 
+task build
+
 subprojects {
   apply plugin: net.fabricmc.loom.bootstrap.LoomGradlePluginBootstrap
 
@@ -48,9 +50,22 @@ subprojects {
       }
     }
     maven {
-      name = 'atakku'
+      name = 'Atakku Eufonia'
       url = 'https://maven.atakku.dev/eufonia'
     }
+    maven { 
+      name = 'OwO Lib'
+      url = 'https://maven.wispforest.io' 
+    }
+    maven { 
+      name = 'TerraformersMC'
+      url = "https://maven.terraformersmc.com/releases/"
+    }
+  }
+  
+  if (project.name != 'shared' && rootProject.hasProperty('owo_version')) {
+    sourceSets.main.java.srcDirs += [ 'genJava/' ]
+    compileJava.options.generatedSourceOutputDirectory = file("$projectDir/genJava/dev/atakku/$mod_id/$project.name")
   }
 
   dependencies {
@@ -59,16 +74,29 @@ subprojects {
     modImplementation "net.fabricmc:fabric-loader:$rootProject.loader_version"
     modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_version"
 
-    compileOnly "org.projectlombok:lombok:$rootProject.lombok_version"
-    annotationProcessor "org.projectlombok:lombok:$rootProject.lombok_version"
+    if (rootProject.hasProperty('lombok_version')) {
+      compileOnly "org.projectlombok:lombok:$rootProject.lombok_version"
+      annotationProcessor "org.projectlombok:lombok:$rootProject.lombok_version"
+    }
 
     if (project.name != 'shared') {
-      include(implementation project(path: ':shared', configuration: 'namedElements'))
+      if (rootProject.findProject(':shared')) {
+        include(implementation project(path: ':shared', configuration: 'namedElements'))
+      }
+
+      if (rootProject.hasProperty('owo_version')) {
+        modImplementation "io.wispforest:owo-lib:$rootProject.owo_version"
+        annotationProcessor "io.wispforest:owo-lib:$rootProject.owo_version"
+
+        if (rootProject.hasProperty('runtime_modmenu')) {
+          modApi "com.terraformersmc:modmenu:$rootProject.runtime_modmenu"
+        }
+      }
     }
 
     if (project.name == 'client') {
       rootProject.properties.each {
-        if (it.key.startsWith("runtime_")) {
+        if (it.key.startsWith('runtime_')) {
           modLocalRuntime "maven.modrinth:${it.key.split("_")[1]}:${it.value}"
         }
       }
@@ -76,6 +104,7 @@ subprojects {
   }
 
   processResources {
+	  inputs.properties(rootProject.properties.findAll { it.value instanceof String })
     filesMatching('fabric.mod.json') {
       expand (rootProject.properties)
     }
@@ -100,10 +129,7 @@ subprojects {
       from remapJar
       into '../build'
     }
-    build.finalizedBy("$project.path:copyJar")
+    build.finalizedBy(copyJar)
+    rootProject.build.dependsOn(build)
   }
 }
-
-task build
-build.dependsOn(':client:build')
-build.dependsOn(':server:build')
