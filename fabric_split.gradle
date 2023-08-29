@@ -17,6 +17,7 @@ task build
 
 subprojects {
   apply plugin: net.fabricmc.loom.bootstrap.LoomGradlePluginBootstrap
+  apply plugin: 'maven-publish'
 
   base {
 	  archivesName = "$rootProject.mod_name-$project.name"
@@ -100,6 +101,10 @@ subprojects {
           modLocalRuntime "maven.modrinth:${it.key.split("_")[1]}:${it.value}"
         }
       }
+
+      if (rootProject.hasProperty('hudl_version')) {
+        modApi "dev.atakku:hudl-client:$rootProject.hudl_version"
+      }
     }
   }
 
@@ -131,5 +136,24 @@ subprojects {
     }
     build.finalizedBy(copyJar)
     rootProject.build.dependsOn(build)
+  }
+
+  publishing {
+    repositories {
+      maven {
+        name = "atakku"
+        url = "https://maven.atakku.dev/eufonia"
+        credentials(PasswordCredentials)
+        authentication {
+          basic(BasicAuthentication)
+        }
+      }
+    }
+    publications {
+      maven(MavenPublication) {
+        from components.java
+        artifactId = "$rootProject.mod_id-$project.name"
+      }
+    }
   }
 }
