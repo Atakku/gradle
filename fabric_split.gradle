@@ -42,6 +42,7 @@ subprojects {
     exclusiveContent {
       forRepository {
         maven {
+          name = 'modrinth'
           url = 'https://api.modrinth.com/maven'
         }
       }
@@ -50,6 +51,7 @@ subprojects {
       }
     }
     maven {
+      name = 'atakku'
       url = 'https://maven.atakku.dev/eufonia'
       credentials(PasswordCredentials)
       authentication {
@@ -57,9 +59,11 @@ subprojects {
       }
     }
     maven { 
+      name = 'wisp'
       url = 'https://maven.wispforest.io' 
     }
     maven { 
+      name = 'terraformersmc'
       url = "https://maven.terraformersmc.com/releases/"
     }
   }
