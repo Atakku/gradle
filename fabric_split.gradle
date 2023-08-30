@@ -85,7 +85,7 @@ subprojects {
     }
 
     if (project.name != 'shared') {
-      if (rootProject.findProject(':shared')) {
+      if (findProject(':shared')) {
         include(implementation project(path: ':shared', configuration: 'namedElements'))
       }
 
@@ -124,7 +124,7 @@ subprojects {
       client {
         programArgs '--username', 'AtakkuDev'
         
-        if (rootProject.findProject(':shared')) {
+        if (findProject(':server')) {
           programArgs '--server', 'localhost'
         }
         runDir = '../.run/client'
