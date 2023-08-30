@@ -123,6 +123,10 @@ subprojects {
     runs {
       client {
         programArgs '--username', 'AtakkuDev'
+        
+        if (rootProject.findProject(':shared')) {
+          programArgs '--server', 'localhost'
+        }
         runDir = '../.run/client'
         client()
       }
