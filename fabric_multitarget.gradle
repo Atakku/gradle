@@ -35,11 +35,6 @@ sourceSets {
     java.srcDirs = []
     resources.srcDirs = []
   }
-//  // Runtime sourceset
-//  full {
-//    java.srcDirs = []
-//    resources.srcDirs = []
-//  }
 }
 jar.enabled = false
 remapJar.enabled = false
@@ -62,10 +57,6 @@ targets.each { target, deps ->
         }
       }
     }
-//    full {
-//      compileClasspath += sourceSets."$target".compileClasspath
-//      runtimeClasspath += sourceSets."$target".runtimeClasspath
-//    }
   }
 
   loom.createRemapConfigurations sourceSets."$target"
@@ -101,7 +92,6 @@ targets.each { target, deps ->
     deps.each { dep, include ->
       "${target}Implementation" sourceSets."$dep".output
     }
-//    fullImplementation sourceSets."$target".output
   }
 
   publishing {
