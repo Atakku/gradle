@@ -20,7 +20,7 @@ subprojects {
   apply plugin: 'maven-publish'
 
   base {
-	  archivesName = "$rootProject.mod_name-$project.name"
+    archivesName = "$rootProject.mod_name-$project.name"
   }
 
   group = "dev.atakku"
@@ -113,7 +113,7 @@ subprojects {
   }
 
   processResources {
-	  inputs.properties(rootProject.properties.findAll { it.value instanceof String })
+    inputs.properties(rootProject.properties.findAll { it.value instanceof String })
     filesMatching('fabric.mod.json') {
       expand (rootProject.properties)
     }
@@ -160,7 +160,8 @@ subprojects {
     publications {
       maven(MavenPublication) {
         from components.java
-        artifactId = "$rootProject.mod_id-$project.name"
+        artifactId = "$rootProject.mod_id-$project.name-$rootProject.minecraft_version"
+        version = "$rootProject.mod_version"
       }
     }
   }
