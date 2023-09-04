@@ -97,8 +97,10 @@ targets.each { target, deps ->
   publishing {
     publications {
       "$target"(MavenPublication) {
+        version = mod_version
+        artifactId = "$project.mod_id-$project.minecraft_version-$target"
+        artifact tasks."remapJar$target".archiveFile
         from components.java
-        artifactId = "$project.mod_id-$target-$project.minecraft_version"
       }
     }
   }
