@@ -109,14 +109,18 @@ targets.each { target, deps ->
 loom {
   runs {
     client {
-      source = sourceSets.client
+      if (targets.containsKey('client')) {
+        source = sourceSets.client
+      }
       name = "$project.mod_name Client"
       programArgs '--username', 'AtakkuDev'
       programArgs '--server', 'localhost'
       runDir = '.run/client'
     }
     server {
-      source = sourceSets.server
+      if (targets.containsKey('server')) {
+        source = sourceSets.server
+      }
       name = "$project.mod_name Server"
       runDir = '.run/server'
     }
