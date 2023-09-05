@@ -99,9 +99,6 @@ targets.each { target, deps ->
         exclude group: "net.fabricmc.fabric-api"
       }
       "${target}AnnotationProcessor" "io.wispforest:owo-lib:$project.owo_version"
-      if (project.hasProperty('run_modmenu')) {
-        modClientCompileOnly "com.terraformersmc:modmenu:$project.run_modmenu"
-      }
     }
   }
 
