@@ -52,8 +52,7 @@ targets.each { target, deps ->
   sourceSets {
     "$target" {
       java { 
-        srcDirs = ["java/"]
-        include "**/$mod_id/$target/**"
+        srcDirs = ["java/$target/"]
       }
       resources.srcDirs = ["res/$target/"]
       compileClasspath += sourceSets.main.compileClasspath
