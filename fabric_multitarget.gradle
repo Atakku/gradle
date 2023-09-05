@@ -92,6 +92,17 @@ targets.each { target, deps ->
     deps.each { dep, include ->
       "${target}Implementation" sourceSets."$dep".output
     }
+
+    if (project.hasProperty('owo_version')) {
+      "mod${target.capitalize()}Implementation"("io.wispforest:owo-lib:$project.owo_version") {
+        exclude group: "net.fabricmc"
+        exclude group: "net.fabricmc.fabric-api"
+      }
+      "${target}AnnotationProcessor" "io.wispforest:owo-lib:$project.owo_version"
+      if (project.hasProperty('run_modmenu')) {
+        modClientCompileOnly "com.terraformersmc:modmenu:$project.run_modmenu"
+      }
+    }
   }
 
   publishing {
@@ -158,26 +169,11 @@ repositories {
   }
 }
 
-//if (project.name != 'shared' && rootProject.hasProperty('owo_version')) {
-//    sourceSets.main.java.srcDirs += [ 'genJava/' ]
-//    compileJava.options.generatedSourceOutputDirectory = file("$projectDir/genJava/dev/atakku/$mod_id/$project.name")
-//}
-
 dependencies {
   minecraft "com.mojang:minecraft:$project.minecraft_version"
   mappings "net.fabricmc:yarn:$project.yarn_mappings:v2"
   modImplementation "net.fabricmc:fabric-loader:$project.loader_version"
   modImplementation "net.fabricmc.fabric-api:fabric-api:$project.fabric_version"
-
-//  fullImplementation sourceSets.main.output
-
-  //if (project.hasProperty('owo_version')) {
-  //  modImplementation "io.wispforest:owo-lib:$project.owo_version"
-  //  annotationProcessor "io.wispforest:owo-lib:$project.owo_version"
-  //  if (project.hasProperty('run_modmenu')) {
-  //    modClientApi "com.terraformersmc:modmenu:$project.run_modmenu"
-  //  }
-  //}
 
   project.properties.each {
     if (it.key.startsWith("run_")) {
