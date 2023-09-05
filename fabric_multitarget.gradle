@@ -32,7 +32,7 @@ tasks.withType(JavaCompile).configureEach {
 configurations.all {
   resolutionStrategy {
     force("net.fabricmc:fabric-loader:$loader_version")
-    force("net.fabricmc.fabric-api:fabric-api:$loader_version")
+    force("net.fabricmc.fabric-api:fabric-api:$fabric_version")
   }
 }
 
