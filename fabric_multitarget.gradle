@@ -29,6 +29,13 @@ tasks.withType(JavaCompile).configureEach {
   it.options.release = 17
 }
 
+configurations.all {
+  resolutionStrategy {
+    force("net.fabricmc:fabric-loader:$loader_version")
+    force("net.fabricmc.fabric-api:fabric-api:$loader_version")
+  }
+}
+
 sourceSets {
   // Shared Minecraft & Fabric Sourceset
   main {
@@ -94,10 +101,7 @@ targets.each { target, deps ->
     }
 
     if (project.hasProperty('owo_version')) {
-      "mod${target.capitalize()}Implementation"("io.wispforest:owo-lib:$project.owo_version") {
-        exclude group: "net.fabricmc"
-        exclude group: "net.fabricmc.fabric-api"
-      }
+      "mod${target.capitalize()}Implementation"("io.wispforest:owo-lib:$project.owo_version")
       "${target}AnnotationProcessor" "io.wispforest:owo-lib:$project.owo_version"
     }
   }
