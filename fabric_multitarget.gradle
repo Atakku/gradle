@@ -153,8 +153,8 @@ repositories {
     }
   }
   maven {
-    name = 'atakku'
-    url = 'https://maven.atakku.dev/eufonia'
+    name = "github"
+    url = "https://maven.pkg.github.com/Eufonia-Studio/"
     credentials(PasswordCredentials)
     authentication {
       basic(BasicAuthentication)
@@ -193,8 +193,8 @@ tasks.withType(ProcessResources).configureEach {
 publishing {
   repositories {
     maven {
-      name = "atakku"
-      url = "https://maven.atakku.dev/eufonia"
+      name = "github"
+      url = "https://maven.pkg.github.com/Eufonia-Studio/"
       credentials(PasswordCredentials)
       authentication {
         basic(BasicAuthentication)
