@@ -152,14 +152,6 @@ repositories {
       includeGroup 'maven.modrinth'
     }
   }
-  maven {
-    name = "github"
-    url = "https://maven.pkg.github.com/Eufonia-Studio/"
-    credentials(PasswordCredentials)
-    authentication {
-      basic(BasicAuthentication)
-    }
-  }
   maven { 
     name = 'wisp'
     url = 'https://maven.wispforest.io' 
@@ -194,7 +186,7 @@ publishing {
   repositories {
     maven {
       name = "github"
-      url = "https://maven.pkg.github.com/Eufonia-Studio/"
+      url = "https://maven.pkg.github.com/Eufonia-Studio/$project.mod_name"
       credentials(PasswordCredentials)
       authentication {
         basic(BasicAuthentication)
