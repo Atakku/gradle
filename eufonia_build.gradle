@@ -135,7 +135,7 @@ subprojects {
   }
   
   loom.runs {
-    if (project.name == "client") {
+    //if (project.name == "client") {
       client {
         name = "$rootProject.mod_name Client"
         if (rootProject.hasProperty('client_username')) {
@@ -146,17 +146,17 @@ subprojects {
         }
         runDir = file("$rootDir/.run/client")
       }
-    } else {
-      remove client
-    }
-    if (project.name == "server") {
+    //} else {
+    //  remove client
+    //}
+    //if (project.name == "server") {
       server {
         name = "$rootProject.mod_name Server"
         runDir = file("$rootDir/.run/server")
       }
-    } else {
-      remove server
-    }
+    //} else {
+    //  remove server
+    //}
   }
   
   publishing {
