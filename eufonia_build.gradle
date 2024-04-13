@@ -59,7 +59,6 @@ subprojects {
       filter {
         includeGroup 'dev.atakku'
         includeGroup 'me.arycer'
-        includeGroup 'software.bernie.geckolib'
         includeGroup 'studio.eufonia'
       }
     }
@@ -83,6 +82,7 @@ subprojects {
       }
       filter {
         includeGroup 'com.eliotlash.mclib'
+        includeGroup 'software.bernie.geckolib'
       }
     }
     exclusiveContent {
