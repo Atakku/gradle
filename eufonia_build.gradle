@@ -161,7 +161,7 @@ subprojects {
         if (rootProject.hasProperty('client_host')) {
           programArgs '--server', rootProject.client_host
         }
-        runDir = file("$rootDir/.run/client")
+        runDir = '../../.run/client'
       }
     //} else {
     //  remove client
@@ -169,7 +169,7 @@ subprojects {
     //if (project.name == "server") {
       server {
         name = "$rootProject.mod_name Server"
-        runDir = file("$rootDir/.run/server")
+        runDir = '../../.run/server'
       }
     //} else {
     //  remove server
