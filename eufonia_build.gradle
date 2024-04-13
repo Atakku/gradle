@@ -14,6 +14,8 @@ buildscript {
 }
 
 task publish
+task runClient
+task runServer
 
 subprojects {
   apply plugin: net.fabricmc.loom.bootstrap.LoomGradlePluginBootstrap
@@ -152,28 +154,20 @@ subprojects {
   }
   
   loom.runs {
-    //if (project.name == "client") {
-      client {
-        name = "$rootProject.mod_name Client"
-        if (rootProject.hasProperty('client_username')) {
-          programArgs '--username', rootProject.client_username
-        }
-        if (rootProject.hasProperty('client_host')) {
-          programArgs '--server', rootProject.client_host
-        }
-        runDir = '../../.run/client'
+    client {
+      name = "$rootProject.mod_name Client"
+      if (rootProject.hasProperty('client_username')) {
+        programArgs '--username', rootProject.client_username
       }
-    //} else {
-    //  remove client
-    //}
-    //if (project.name == "server") {
-      server {
-        name = "$rootProject.mod_name Server"
-        runDir = '../../.run/server'
+      if (rootProject.hasProperty('client_host')) {
+        programArgs '--server', rootProject.client_host
       }
-    //} else {
-    //  remove server
-    //}
+      runDir = '../../.run/client'
+    }
+    server {
+      name = "$rootProject.mod_name Server"
+      runDir = '../../.run/server'
+    }
   }
   
   publishing {
@@ -195,7 +189,14 @@ subprojects {
       }
     }
   }
+  
   rootProject.publish.dependsOn(publish)
+  if (project.name == "client") {
+    rootProject.runClient.dependsOn(runClient)
+  }
+  if (project.name == "server") {
+    rootProject.runServer.dependsOn(runServer)
+  }
 }
 
 gradle.ext.targets.each { target, deps ->
