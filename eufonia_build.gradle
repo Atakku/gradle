@@ -14,8 +14,6 @@ buildscript {
 }
 
 task publish
-task runClient
-task runServer
 
 subprojects {
   apply plugin: net.fabricmc.loom.bootstrap.LoomGradlePluginBootstrap
@@ -202,11 +200,11 @@ subprojects {
   }
   
   rootProject.publish.dependsOn(publish)
-  if (project.name == "client") {
-    rootProject.runClient.dependsOn(runClient)
+  if (project.name != "client") {
+    runClient.enabled = false
   }
-  if (project.name == "server") {
-    rootProject.runServer.dependsOn(runServer)
+  if (project.name != "server") {
+    runServer.enabled = false
   }
 }
 
