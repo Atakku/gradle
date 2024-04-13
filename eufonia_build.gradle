@@ -117,6 +117,17 @@ subprojects {
         includeGroup 'io.wispforest'
       }
     }
+    exclusiveContent {
+      forRepository {
+        maven { 
+          name = 'terraformersmc'
+          url = 'https://maven.terraformersmc.com/releases/' 
+        }
+      }
+      filter {
+        includeGroup 'com.terraformersmc'
+      }
+    }
   }
 
   dependencies {
