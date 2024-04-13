@@ -45,7 +45,24 @@ subprojects {
   }
 
   repositories {
-    mavenCentral()
+    exclusiveContent {
+      forRepository {
+        maven {
+          name = 'eufoniaMavenReleases'
+          url = 'https://maven.eufonia.studio/releases/'
+          credentials(PasswordCredentials)
+          authentication {
+            basic(BasicAuthentication)
+          }
+        }
+      }
+      filter {
+        includeGroup 'dev.atakku'
+        includeGroup 'me.arycer'
+        includeGroup 'software.bernie.geckolib'
+        includeGroup 'studio.eufonia'
+      }
+    }
     exclusiveContent {
       forRepository {
         maven {
@@ -60,7 +77,7 @@ subprojects {
     exclusiveContent {
       forRepository {
         maven {
-          name = 'geckolib'
+          name = 'cloudsmith'
           url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
         }
       }
@@ -79,24 +96,28 @@ subprojects {
         includeGroup 'me.lucko'
       }
     }
-    maven { 
-      name = 'wispforest'
-      url = 'https://maven.wispforest.io' 
-    }
-    maven { 
-      name = 'terraformersmc'
-      url = "https://maven.terraformersmc.com/releases/"
-    }
-    maven {
-      name = 'eufoniaMavenReleases'
-      url = 'https://maven.eufonia.studio/releases/'
-      credentials(PasswordCredentials)
-      authentication {
-        basic(BasicAuthentication)
+    if (rootProject.hasProperty('lombok_version')) {
+      exclusiveContent {
+        forRepository {
+          mavenCentral()
+        }
+        filter {
+          includeGroup 'org.projectlombok'
+        }
       }
     }
-    flatDir {
-      dirs file("$rootDir/libs")
+    if (rootProject.hasProperty('owo_version')) {
+      exclusiveContent {
+        forRepository {
+          maven { 
+            name = 'wispforest'
+            url = 'https://maven.wispforest.io' 
+          }
+        }
+        filter {
+          includeGroup 'io.wispforest'
+        }
+      }
     }
   }
 
