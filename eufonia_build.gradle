@@ -1,0 +1,173 @@
+// Copyright 2024 Atakku <https://atakku.dev>
+
+buildscript {
+  repositories {
+    mavenCentral()
+    maven {
+      name = 'Fabric'
+      url = 'https://maven.fabricmc.net/'
+    }
+  }
+  dependencies {
+    classpath 'fabric-loom:fabric-loom.gradle.plugin:1.6-SNAPSHOT'
+  }
+}
+
+task publish
+
+subprojects {
+  apply plugin: net.fabricmc.loom.bootstrap.LoomGradlePluginBootstrap
+  apply plugin: 'maven-publish'
+
+  base {
+    archivesName = rootProject.mod_name
+  }
+  group = rootProject.mod_group
+  version = "$rootProject.mod_version+$rootProject.minecraft_version-$project.name"
+  
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
+  
+  tasks.withType(JavaCompile).configureEach {
+    it.options.release = 17
+  }
+  
+  sourceSets {
+    main.java.srcDirs = [file("$rootDir/java/$project.name")]
+    main.resources.srcDirs = [file("$rootDir/res/$project.name")]
+  }
+
+  configurations.all {
+    resolutionStrategy {
+      force("net.fabricmc:fabric-loader:$rootProject.loader_version")
+      force("net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_version")
+    }
+  }
+
+  repositories {
+    exclusiveContent {
+      forRepository {
+        maven {
+          name = 'modrinth'
+          url = 'https://api.modrinth.com/maven'
+        }
+      }
+      filter {
+        includeGroup 'maven.modrinth'
+      }
+    }
+    maven { 
+      name = 'wisp'
+      url = 'https://maven.wispforest.io' 
+    }
+    maven { 
+      name = 'terraformersmc'
+      url = "https://maven.terraformersmc.com/releases/"
+    }
+    maven {
+      name = 'eufoniaMavenReleases'
+      url = 'https://maven.eufonia.studio/releases/'
+      credentials(PasswordCredentials)
+      authentication {
+        basic(BasicAuthentication)
+      }
+    }
+    flatDir {
+      dirs file("$rootDir/libs")
+    }
+  }
+
+  dependencies {
+	  minecraft "com.mojang:minecraft:$rootProject.minecraft_version"
+    mappings "net.fabricmc:yarn:$rootProject.yarn_mappings:v2"
+    modImplementation "net.fabricmc:fabric-loader:$rootProject.loader_version"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_version"
+
+    if (rootProject.hasProperty('lombok_version')) {
+      compileOnly "org.projectlombok:lombok:$rootProject.lombok_version"
+      annotationProcessor "org.projectlombok:lombok:$rootProject.lombok_version"
+    }
+    
+    if (rootProject.hasProperty('owo_version')) {
+      modImplementation "io.wispforest:owo-lib:$rootProject.owo_version"
+      annotationProcessor "io.wispforest:owo-lib:$rootProject.owo_version"
+    }
+
+    rootProject.properties.each {
+      if (it.key.startsWith("run_")) {
+        modLocalRuntime "maven.modrinth:${it.key.split("_")[1]}:${it.value}"
+      }
+    }
+  }
+
+  tasks.withType(ProcessResources).configureEach {
+    it.inputs.properties(rootProject.properties.findAll { it.value instanceof String })
+    it.filesMatching('fabric.mod.json') {
+      expand(rootProject.properties)
+    }
+  }
+
+  tasks.withType(net.fabricmc.loom.task.RemapJarTask).configureEach {
+    it.destinationDirectory = file("$rootDir/build/libs")
+  }
+  
+  loom.runs {
+    if (project.name == "client") {
+      client {
+        name = "$rootProject.mod_name Client"
+        if (rootProject.hasProperty('client_username')) {
+          programArgs '--username', rootProject.client_username
+        }
+        if (rootProject.hasProperty('client_host')) {
+          programArgs '--server', rootProject.client_host
+        }
+        runDir = file("$rootDir/.run/client")
+      }
+    } else {
+      remove client
+    }
+    if (project.name == "server") {
+      server {
+        name = "$rootProject.mod_name Server"
+        runDir = file("$rootDir/.run/server")
+      }
+    } else {
+      remove server
+    }
+  }
+  
+  publishing {
+    repositories {
+      maven {
+        name = 'eufoniaMavenReleases'
+        url = 'https://maven.eufonia.studio/releases/'
+        credentials(PasswordCredentials)
+        authentication {
+          basic(BasicAuthentication)
+        }
+      }
+    }
+    publications {
+      maven(MavenPublication) {
+        version = mod_version
+        artifactId = "$rootProject.mod_name-$rootProject.minecraft_version-$project.name"
+        from components.java
+      }
+    }
+  }
+  rootProject.publish.dependsOn(publish)
+}
+
+gradle.ext.targets.each { target, deps ->
+  project(":$target") {
+    dependencies {
+      deps.each { dep, inc ->
+        if (inc) {
+          include(implementation project(path: ":$dep", configuration: 'namedElements'))
+        } else {
+          implementation project(path: ":$dep", configuration: 'namedElements')
+        }
+      }
+    }
+  }
+}
