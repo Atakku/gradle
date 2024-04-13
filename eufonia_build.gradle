@@ -81,8 +81,8 @@ subprojects {
         }
       }
       filter {
+        includeGroupByRegex("software\\.bernie.*")
         includeGroup 'com.eliotlash.mclib'
-        includeGroup 'software.bernie.geckolib'
       }
     }
     exclusiveContent {
