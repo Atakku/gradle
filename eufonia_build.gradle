@@ -75,6 +75,7 @@ subprojects {
     flatDir {
       dirs file("$rootDir/libs")
     }
+    mavenCentral()
   }
 
   dependencies {
