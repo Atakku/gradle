@@ -45,6 +45,7 @@ subprojects {
   }
 
   repositories {
+    mavenCentral()
     exclusiveContent {
       forRepository {
         maven {
@@ -57,12 +58,16 @@ subprojects {
       }
     }
     maven { 
-      name = 'wisp'
+      name = 'wispforest'
       url = 'https://maven.wispforest.io' 
     }
     maven { 
       name = 'terraformersmc'
       url = "https://maven.terraformersmc.com/releases/"
+    }
+    maven { 
+      name = 'sonatype'
+      url 'https://oss.sonatype.org/content/repositories/snapshots'
     }
     maven {
       name = 'eufoniaMavenReleases'
@@ -75,7 +80,6 @@ subprojects {
     flatDir {
       dirs file("$rootDir/libs")
     }
-    mavenCentral()
   }
 
   dependencies {
