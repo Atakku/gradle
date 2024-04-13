@@ -190,7 +190,7 @@ subprojects {
     publications {
       maven(MavenPublication) {
         version = mod_version
-        artifactId = "$rootProject.mod_name-$rootProject.minecraft_version-$project.name"
+        artifactId = "$rootProject.mod_id-$rootProject.minecraft_version-$project.name"
         from components.java
       }
     }
