@@ -77,7 +77,7 @@ subprojects {
     exclusiveContent {
       forRepository {
         maven {
-          name = 'cloudsmith'
+          name = 'geckolib3'
           url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
         }
       }
@@ -96,27 +96,23 @@ subprojects {
         includeGroup 'me.lucko'
       }
     }
-    if (rootProject.hasProperty('lombok_version')) {
-      exclusiveContent {
-        forRepository {
-          mavenCentral()
-        }
-        filter {
-          includeGroup 'org.projectlombok'
-        }
+    exclusiveContent {
+      forRepository {
+        mavenCentral()
+      }
+      filter {
+        includeGroup 'org.projectlombok'
       }
     }
-    if (rootProject.hasProperty('owo_version')) {
-      exclusiveContent {
-        forRepository {
-          maven { 
-            name = 'wispforest'
-            url = 'https://maven.wispforest.io' 
-          }
+    exclusiveContent {
+      forRepository {
+        maven { 
+          name = 'wispforest'
+          url = 'https://maven.wispforest.io' 
         }
-        filter {
-          includeGroup 'io.wispforest'
-        }
+      }
+      filter {
+        includeGroup 'io.wispforest'
       }
     }
   }
