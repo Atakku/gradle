@@ -126,6 +126,19 @@ subprojects {
         includeGroup 'com.terraformersmc'
       }
     }
+    exclusiveContent {
+      forRepository {
+        maven { 
+          name = 'ladysnake'
+          url = 'https://maven.ladysnake.org/releases/' 
+        }
+      }
+      filter {
+        includeGroup 'io.github.ladysnake'
+        includeGroup 'org.ladysnake'
+        includeGroupByRegex 'dev\\.onyxstudios.*'
+      }
+    }
   }
 
   dependencies {
