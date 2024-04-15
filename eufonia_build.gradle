@@ -152,6 +152,16 @@ subprojects {
       annotationProcessor "org.projectlombok:lombok:$rootProject.lombok_version"
     }
     
+    if (rootProject.hasProperty('cuca_version')) {
+      if (project.name == 'client') {
+        modImplementation "dev.atakku:cuca-$rootProject.minecraft_version-client:$rootProject.cuca_version"
+      }
+      if (project.name == 'server') {
+        modImplementation "dev.atakku:cuca-$rootProject.minecraft_version-server:$rootProject.cuca_version"
+      }
+      modImplementation "dev.atakku:cuca-$rootProject.minecraft_version-shared:$rootProject.cuca_version"
+    }
+    
     if (rootProject.hasProperty('owo_version')) {
       modImplementation "io.wispforest:owo-lib:$rootProject.owo_version"
       annotationProcessor "io.wispforest:owo-lib:$rootProject.owo_version"
@@ -184,11 +194,11 @@ subprojects {
       if (rootProject.hasProperty('client_host')) {
         programArgs '--server', rootProject.client_host
       }
-      runDir = '../../.run/client'
+      runDir = '../../../.run/client'
     }
     server {
       name = "$rootProject.mod_name Server"
-      runDir = '../../.run/server'
+      runDir = '../../../.run/server'
     }
   }
   
