@@ -57,6 +57,7 @@ subprojects {
         }
       }
       filter {
+        includeGroup 'software.bernie.geckolib'
         includeGroup 'dev.atakku'
         includeGroup 'me.arycer'
         includeGroup 'studio.eufonia'
@@ -81,7 +82,6 @@ subprojects {
         }
       }
       filter {
-        includeGroupByRegex("software\\.bernie.*")
         includeGroup 'com.eliotlash.mclib'
       }
     }
