@@ -16,7 +16,7 @@ buildscript {
 task publish
 
 def eufonia_dep(type, proj, name) {
-  def prop_name = "$name_version"
+  def prop_name = "${name}_version"
   if (rootProject.hasProperty(prop_name)) {
     def version = rootProject.property(prop_name)
     if (project.name == 'client') {
