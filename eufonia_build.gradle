@@ -16,18 +16,27 @@ buildscript {
 task publish
 
 def eufonia_dep(type, proj, name) {
-  def prop_name = "${name}_version"
-  if (rootProject.hasProperty(prop_name)) {
-    def version = rootProject.property(prop_name)
-    if (project.name == 'client') {
-      "$type" "$proj-$rootProject.minecraft_version-client:$version"
+  subprojects {
+    dependencies {
+      def prop_name = "${name}_version"
+      if (rootProject.hasProperty(prop_name)) {
+        def version = rootProject.property(prop_name)
+        if (project.name == 'client') {
+          "$type" "$proj-$rootProject.minecraft_version-client:$version"
+        }
+        if (project.name == 'server') {
+          "$type" "$proj-$rootProject.minecraft_version-server:$version"
+        }
+        "$type" "$proj-$rootProject.minecraft_version-shared:$version"
+      }
     }
-    if (project.name == 'server') {
-      "$type" "$proj-$rootProject.minecraft_version-server:$version"
-    }
-    "$type" "$proj-$rootProject.minecraft_version-shared:$version"
   }
 }
+
+eufonia_dep('modImplementation', 'dev.atakku:cuca', 'cuca')
+eufonia_dep('modImplementation', 'dev.atakku:mrph', 'morpher')
+eufonia_dep('modImplementation', 'dev.atakku:qstr', 'quester')
+eufonia_dep('modImplementation', 'dev.atakku:sync', 'syncer')
 
 subprojects {
   apply plugin: net.fabricmc.loom.bootstrap.LoomGradlePluginBootstrap
@@ -176,13 +185,6 @@ subprojects {
         modLocalRuntime "maven.modrinth:${it.key.split("_")[1]}:${it.value}"
       }
     }
-  }
-
-  dependencies {
-    eufonia_dep('modImplementation', 'dev.atakku:cuca', 'cuca')
-    eufonia_dep('modImplementation', 'dev.atakku:mrph', 'morpher')
-    eufonia_dep('modImplementation', 'dev.atakku:qstr', 'quester')
-    eufonia_dep('modImplementation', 'dev.atakku:sync', 'syncer')
   }
 
   tasks.withType(ProcessResources).configureEach {
