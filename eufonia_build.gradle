@@ -102,6 +102,7 @@ subprojects {
       }
       filter {
         includeGroup 'org.projectlombok'
+        includeGroup 'com.google.guava'
       }
     }
     exclusiveContent {
