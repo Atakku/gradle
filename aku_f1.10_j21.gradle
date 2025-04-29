@@ -1,0 +1,182 @@
+// Copyright 2025 Atakku <https://atakku.dev>
+
+buildscript {
+  repositories {
+    maven {
+      name = 'Fabric'
+      url = 'https://maven.fabricmc.net/'
+    }
+    mavenCentral()
+    gradlePluginPortal()
+  }
+  dependencies {
+    classpath 'fabric-loom:fabric-loom.gradle.plugin:1.10-SNAPSHOT'
+  }
+}
+
+subprojects {
+  apply plugin: net.fabricmc.loom.LoomGradlePlugin
+
+  base {
+    archivesName = rootProject.mod_name
+  }
+  group = rootProject.mod_group
+  version = "$rootProject.mod_version+$rootProject.minecraft_version-$project.name"
+  
+  sourceCompatibility = JavaVersion.VERSION_21
+  targetCompatibility = JavaVersion.VERSION_21
+  
+  tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+  }
+  
+  sourceSets {
+    main.java.srcDirs = [file("$rootDir/java/$project.name")]
+    main.resources.srcDirs = [file("$rootDir/res/$project.name")]
+  }
+
+  configurations.all {
+    resolutionStrategy {
+      force("net.fabricmc:fabric-loader:$rootProject.loader_version")
+      force("net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_version")
+    }
+  }
+
+  repositories {
+    exclusiveContent {
+      forRepository {
+        maven {
+          name = 'modrinth'
+          url = 'https://api.modrinth.com/maven'
+        }
+      }
+      filter {
+        includeGroup 'maven.modrinth'
+      }
+    }
+    exclusiveContent {
+      forRepository {
+        maven {
+          name = 'geckolib3'
+          url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        }
+      }
+      filter {
+        includeGroup 'com.eliotlash.mclib'
+      }
+    }
+    exclusiveContent {
+      forRepository {
+        maven { 
+          name = 'sonatype'
+          url 'https://oss.sonatype.org/content/repositories/snapshots'
+        }
+      }
+      filter {
+        includeGroup 'me.lucko'
+      }
+    }
+    exclusiveContent {
+      forRepository {
+        mavenCentral()
+      }
+      filter {
+        includeGroup 'org.projectlombok'
+        includeGroup 'com.google.guava'
+      }
+    }
+    exclusiveContent {
+      forRepository {
+        maven { 
+          name = 'terraformersmc'
+          url = 'https://maven.terraformersmc.com/releases/' 
+        }
+      }
+      filter {
+        includeGroup 'com.terraformersmc'
+      }
+    }
+    exclusiveContent {
+      forRepository {
+        maven { 
+          name = 'ladysnake'
+          url = 'https://maven.ladysnake.org/releases/' 
+        }
+      }
+      filter {
+        includeGroup 'io.github.ladysnake'
+        includeGroup 'org.ladysnake'
+        includeGroupByRegex 'dev\\.onyxstudios.*'
+      }
+    }
+  }
+
+  dependencies {
+    minecraft "com.mojang:minecraft:$rootProject.minecraft_version"
+    mappings "net.fabricmc:yarn:$rootProject.yarn_mappings:v2"
+    modImplementation "net.fabricmc:fabric-loader:$rootProject.loader_version"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_version"
+
+    if (rootProject.hasProperty('lombok_version')) {
+      compileOnly "org.projectlombok:lombok:$rootProject.lombok_version"
+      annotationProcessor "org.projectlombok:lombok:$rootProject.lombok_version"
+    }
+
+    rootProject.properties.each {
+      if (it.key.startsWith("run_")) {
+        modLocalRuntime "maven.modrinth:${it.key.split("_")[1]}:${it.value}"
+      }
+    }
+  }
+}
+
+subprojects {
+  tasks.withType(ProcessResources).configureEach {
+    it.inputs.properties(rootProject.properties.findAll { it.value instanceof String })
+    it.filesMatching('fabric.mod.json') {
+      expand(rootProject.properties)
+    }
+  }
+
+  tasks.withType(net.fabricmc.loom.task.RemapJarTask).configureEach {
+    it.destinationDirectory = file("$rootDir/build/libs")
+  }
+  
+  loom.runs {
+    client {
+      name = "$rootProject.mod_name Client"
+      if (rootProject.hasProperty('client_username')) {
+        programArgs '--username', rootProject.client_username
+      }
+      if (rootProject.hasProperty('client_host')) {
+        programArgs '--server', rootProject.client_host
+      }
+      runDir = '../../../.run/client'
+    }
+    server {
+      name = "$rootProject.mod_name Server"
+      runDir = '../../../.run/server'
+    }
+  }
+
+  if (project.name != "client") {
+    runClient.enabled = false
+  }
+  if (project.name != "server") {
+    runServer.enabled = false
+  }
+}
+
+gradle.ext.targets.each { target, deps ->
+  project(":$target") {
+    dependencies {
+      deps.each { dep, inc ->
+        if (inc) {
+          include(implementation project(path: ":$dep", configuration: 'namedElements'))
+        } else {
+          implementation project(path: ":$dep", configuration: 'namedElements')
+        }
+      }
+    }
+  }
+}
