@@ -15,7 +15,8 @@ tasks.named('wrapper', Wrapper).configure {
 }
 
 subprojects {
-  apply(plugin = 'net.neoforged.moddev')
+  apply plugin: 'org.gradle.toolchains.foojay-resolver-convention'
+  apply plugin: 'net.neoforged.moddev'
 
   base {
     archivesName = rootProject.mod_name
