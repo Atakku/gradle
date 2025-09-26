@@ -24,6 +24,19 @@ subprojects {
   group = rootProject.mod_group
   version = "$rootProject.mod_version+$rootProject.minecraft_version-$project.name"
 
+  sourceCompatibility = JavaVersion.VERSION_21
+  targetCompatibility = JavaVersion.VERSION_21
+
+  tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+    options.encoding = 'UTF-8'
+  }
+  
+  sourceSets {
+    main.java.srcDirs = [file("$rootDir/java/$project.name")]
+    main.resources.srcDirs = [file("$rootDir/res/$project.name")]
+  }
+
   neoForge {
     version = rootProject.neo_version
 
@@ -53,14 +66,6 @@ subprojects {
         sourceSet(sourceSets.main)
       }
     }
-  }
-
-  sourceCompatibility = JavaVersion.VERSION_21
-  targetCompatibility = JavaVersion.VERSION_21
-  
-  tasks.withType(JavaCompile).configureEach {
-    it.options.release = 21
-    options.encoding = 'UTF-8'
   }
 }
 
