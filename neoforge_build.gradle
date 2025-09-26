@@ -72,20 +72,15 @@ subprojects {
 subprojects {
   var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
     var replaceProperties = [
-      minecraft_version      : minecraft_version,
-      minecraft_version_range: "[$minecraft_version]",
-      neo_version            : neo_version,
-      loader_version_range   : "[1,)",
       mod_id                 : mod_id,
-      mod_name               : mod_name,
-      mod_license            : "APACHE+MIT",
       mod_version            : mod_version,
-      mod_authors            : "Atakku",
-      mod_description        : mod_name
+      mod_name               : mod_name,
+      neo_version            : neo_version,
+      minecraft_version      : minecraft_version
     ]
     inputs.properties replaceProperties
     expand replaceProperties
-    from "src/main/templates"
+    from file("$rootDir/templates")
     into "build/generated/sources/modMetadata"
   }
   sourceSets.main.resources.srcDir generateModMetadata
