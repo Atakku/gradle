@@ -1,4 +1,13 @@
 // Copyright 2025 Atakku <https://atakku.dev>
+buildscript {
+  repositories {
+    gradlePluginPortal()
+  }
+  dependencies {
+    classpath("org.gradle.toolchains.foojay-resolver-convention:org.gradle.toolchains.foojay-resolver-convention.gradle.plugin:1.0.0")
+  }
+}
+apply plugin: org.gradle.toolchains.foojay.FoojayToolchainsPlugin
 
 gradle.ext.targets = targets
 

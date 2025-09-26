@@ -15,8 +15,7 @@ tasks.named('wrapper', Wrapper).configure {
 }
 
 subprojects {
-  apply plugin: 'org.gradle.toolchains.foojay-resolver-convention'
-  apply plugin: 'net.neoforged.moddev'
+  apply plugin: net.neoforged.moddevgradle.internal.ModDevPlugin
 
   base {
     archivesName = rootProject.mod_name
@@ -63,11 +62,13 @@ subprojects {
     it.options.release = 21
     options.encoding = 'UTF-8'
   }
+}
 
+subprojects {
   var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
     var replaceProperties = [
       minecraft_version      : minecraft_version,
-      minecraft_version_range: "[$minecraft_version_range]",
+      minecraft_version_range: "[$minecraft_version]",
       neo_version            : neo_version,
       loader_version_range   : "[1,)",
       mod_id                 : mod_id,
@@ -85,4 +86,21 @@ subprojects {
   sourceSets.main.resources.srcDir generateModMetadata
   neoForge.ideSyncTask generateModMetadata
 
+  tasks.named('jar', Jar) {
+    destinationDirectory = file("$rootDir/build/libs")
+  }
+}
+
+gradle.ext.targets.each { target, deps ->
+  project(":$target") {
+    dependencies {
+      deps.each { dep, inc ->
+        if (inc) {
+          include(implementation project(path: ":$dep", configuration: 'namedElements'))
+        } else {
+          implementation project(path: ":$dep", configuration: 'namedElements')
+        }
+      }
+    }
+  }
 }
