@@ -1,0 +1,86 @@
+buildscript {
+  repositories {
+    gradlePluginPortal()
+  }
+  dependencies {
+    classpath 'org.gradle.toolchains.foojay-resolver-convention:org.gradle.toolchains.foojay-resolver-convention.gradle.plugin:1.0.0'
+    classpath 'net.neoforged.moddev:net.neoforged.moddev.gradle.plugin:2.0.107'
+  }
+}
+
+tasks.named('wrapper', Wrapper).configure {
+  distributionType = Wrapper.DistributionType.BIN
+}
+
+subprojects {
+  apply(plugin = 'org.gradle.toolchains.foojay-resolver-convention')
+  apply(plugin = 'net.neoforged.moddev')
+
+  base {
+    archivesName = rootProject.mod_name
+  }
+
+  group = rootProject.mod_group
+  version = "$rootProject.mod_version+$rootProject.minecraft_version-$project.name"
+
+  neoForge {
+    version = rootProject.neo_version
+
+    parchment {
+      mappingsVersion = rootProject.mappings_version
+      minecraftVersion = rootProject.minecraft_version
+    }
+
+    runs {
+      client {
+        client()
+      }
+
+      server {
+        server()
+        programArgument '--nogui'
+      }
+
+      configureEach {
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+        logLevel = org.slf4j.event.Level.DEBUG
+      }
+    }
+
+    mods {
+      "${rootProject.mod_id}" {
+        sourceSet(sourceSets.main)
+      }
+    }
+  }
+
+  sourceCompatibility = JavaVersion.VERSION_21
+  targetCompatibility = JavaVersion.VERSION_21
+  
+  tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+    options.encoding = 'UTF-8'
+  }
+
+  var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+      minecraft_version      : minecraft_version,
+      minecraft_version_range: minecraft_version_range,
+      neo_version            : neo_version,
+      loader_version_range   : loader_version_range,
+      mod_id                 : mod_id,
+      mod_name               : mod_name,
+      mod_license            : mod_license,
+      mod_version            : mod_version,
+      mod_authors            : mod_authors,
+      mod_description        : mod_description
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+  }
+  sourceSets.main.resources.srcDir generateModMetadata
+  neoForge.ideSyncTask generateModMetadata
+
+}

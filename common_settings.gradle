@@ -1,0 +1,9 @@
+// Copyright 2025 Atakku <https://atakku.dev>
+
+gradle.ext.targets = targets
+
+// Configure a project for each target
+targets.each { target, deps ->
+  include target
+  project(":$target").projectDir = new File(rootDir, ".gradle/projects/$target")
+}
