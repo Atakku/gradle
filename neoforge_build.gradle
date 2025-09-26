@@ -15,7 +15,6 @@ tasks.named('wrapper', Wrapper).configure {
 }
 
 subprojects {
-  apply(plugin = 'org.gradle.toolchains.foojay-resolver-convention')
   apply(plugin = 'net.neoforged.moddev')
 
   base {
